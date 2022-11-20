@@ -1,0 +1,29 @@
+name: Update Repo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run the build script
+      run: |
+        php ./build.php
+        python ./build.py
+        
+    - name: Commit files
+      run: |
+        git config --local user.name ${{ github.actor }}
+        git add .
+        git commit -m "updating the repo automatically"
+        
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        force: true
